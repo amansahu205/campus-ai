@@ -7,15 +7,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy everything first
+# Install Python dependencies inline (no file copy needed)
+RUN pip install --no-cache-dir \
+    "fastapi>=0.115.0" \
+    "uvicorn[standard]>=0.30.0" \
+    "pydantic>=2.7.0" \
+    "pydantic-settings>=2.3.0" \
+    "sqlmodel>=0.0.21" \
+    "asyncpg>=0.29.0" \
+    "alembic>=1.13.0" \
+    "redis>=5.0.0" \
+    "arq>=0.25.0" \
+    "httpx>=0.27.0" \
+    "structlog>=24.0.0" \
+    "sentry-sdk[fastapi]>=2.0.0" \
+    "python-multipart>=0.0.9"
+
+# Copy app code
 COPY . .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Expose port (Railway injects $PORT at runtime)
 EXPOSE 8000
 
-# Start command
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
