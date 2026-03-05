@@ -51,7 +51,7 @@ class Settings(BaseSettings):
 
     # ── CORS + trusted hosts ──────────────────────────────────────
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
-    ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
+    ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1", "*"]
 
     # ── Universities ──────────────────────────────────────────────
     SUPPORTED_UNIVERSITIES: list[str] = ["umd", "michigan"]
