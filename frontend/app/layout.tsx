@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: 'Campus AI — University Intelligence Platform',
   description: 'Your campus, intelligently organized. Real-time AI campus assistant for university students.',
   generator: 'v0.app',
+  icons: {
+    icon: '/logos/campusai-logo.png',
+    shortcut: '/logos/campusai-logo.png',
+    apple: '/logos/campusai-logo.png',
+  },
 }
 
 export default function RootLayout({
