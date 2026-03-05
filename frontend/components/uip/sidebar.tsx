@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Home, UtensilsCrossed, Calendar, Trophy, Moon, Newspaper } from 'lucide-react'
 import type { University } from '@/lib/uip-data'
@@ -28,18 +29,18 @@ export default function Sidebar({ currentPage, onNavigate, syncedAgo = '2 min ag
       className="glass fixed left-0 top-0 h-full w-[180px] z-40 flex flex-col"
       style={{ borderRight: '1px solid rgba(255,255,255,0.45)' }}
     >
-      {/* Logo */}
-      <div className="px-4 py-5 flex items-center gap-2.5">
+      {/* Logo — click to go back to landing page */}
+      <Link href="/" className="px-4 py-5 flex items-center gap-2.5 group" title="Back to home">
         <img
           src="/logos/campusai-logo.png"
           alt="Campus AI logo"
-          className="rounded-xl flex-shrink-0"
+          className="rounded-xl flex-shrink-0 group-hover:opacity-80 transition-opacity"
           style={{ width: 36, height: 36, objectFit: 'cover', display: 'block' }}
         />
-        <span className="text-sm font-bold tracking-tight leading-none" style={{ color: '#1a1a1a' }}>
+        <span className="text-sm font-bold tracking-tight leading-none group-hover:opacity-80 transition-opacity" style={{ color: '#1a1a1a' }}>
           campus<span style={{ color: '#E03A3E' }}>ai</span>
         </span>
-      </div>
+      </Link>
 
       {/* Red accent line */}
       <div className="mx-5 mb-4 h-0.5 rounded-full" style={{ background: '#E03A3E' }} />
