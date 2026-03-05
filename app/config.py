@@ -76,5 +76,14 @@ class Settings(BaseSettings):
             return [item.strip() for item in v.split(",")]
         return v
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def _fix_db_scheme(cls, v: str) -> str:
+        """Railway injects plain postgresql:// — asyncpg needs postgresql+asyncpg://."""
+        if isinstance(v, str):
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+        return v
+
 
 settings = Settings()
