@@ -79,16 +79,10 @@ class Settings(BaseSettings):
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def _fix_db_scheme(cls, v: str) -> str:
-        """Railway/Neon inject plain postgresql:// and libpq-only params — fix for asyncpg."""
+        """Neon/Railway inject plain postgresql:// — rewrite to psycopg v3 scheme."""
         if isinstance(v, str):
-            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
-            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
-            # asyncpg uses ?ssl=require not ?sslmode=require
-            v = v.replace("sslmode=require", "ssl=require")
-            # channel_binding is libpq-only, asyncpg doesn't support it
-            v = v.replace("&channel_binding=require", "")
-            v = v.replace("channel_binding=require&", "")
-            v = v.replace("channel_binding=require", "")
+            v = v.replace("postgresql://", "postgresql+psycopg://", 1)
+            v = v.replace("postgres://", "postgresql+psycopg://", 1)
         return v
 
 
