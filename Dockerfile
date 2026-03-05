@@ -1,13 +1,14 @@
 FROM python:3.12-slim
 
-WORKDIR /app
+# /workspace is our working dir — app code goes into /workspace/app/
+WORKDIR /workspace
 
 # Install system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies inline (no file copy needed)
+# Install Python dependencies
 RUN pip install --no-cache-dir \
     "fastapi>=0.115.0" \
     "uvicorn[standard]>=0.30.0" \
@@ -23,9 +24,11 @@ RUN pip install --no-cache-dir \
     "sentry-sdk[fastapi]>=2.0.0" \
     "python-multipart>=0.0.9"
 
-# Copy app code
-COPY . .
+# Railway sends app/ as build context — copy into /workspace/app/
+# so Python finds it as the `app` package
+COPY . /workspace/app/
 
 EXPOSE 8000
 
+# uvicorn runs from /workspace, imports app.main correctly
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
