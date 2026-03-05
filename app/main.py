@@ -3,7 +3,11 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-import sentry_sdk
+try:
+    import sentry_sdk
+    _SENTRY_AVAILABLE = True
+except ImportError:
+    _SENTRY_AVAILABLE = False
 import structlog
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +25,7 @@ logger = structlog.get_logger()
 
 
 # ── Sentry (initialise before app creation) ───────────────────────────────────
-if settings.SENTRY_DSN:
+if _SENTRY_AVAILABLE and settings.SENTRY_DSN:
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
         traces_sample_rate=0.2,
