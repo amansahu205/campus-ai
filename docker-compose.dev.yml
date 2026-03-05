@@ -1,0 +1,108 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: campus_ai_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-campus_ai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campus_ai_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-campus_ai_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-campus_ai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: campus_ai_redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: campus_ai_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:6333/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: campus_ai_api
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-campus_ai}:${POSTGRES_PASSWORD:-campus_ai_secret}@postgres:5432/${POSTGRES_DB:-campus_ai_dev}
+      REDIS_URL: redis://redis:6379/0
+      QDRANT_URL: http://qdrant:6333
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: campus_ai_worker
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-campus_ai}:${POSTGRES_PASSWORD:-campus_ai_secret}@postgres:5432/${POSTGRES_DB:-campus_ai_dev}
+      REDIS_URL: redis://redis:6379/0
+      QDRANT_URL: http://qdrant:6333
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ENVIRONMENT: development
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: python -m arq app.workers.tasks.WorkerSettings
+
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    container_name: campus_ai_prefect
+    environment:
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+      PREFECT_UI_API_URL: http://localhost:4200/api
+    ports:
+      - "4200:4200"
+    command: prefect server start --host 0.0.0.0
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:

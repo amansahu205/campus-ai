@@ -1,0 +1,1 @@
+"""Campus AI – pipeline package."""
