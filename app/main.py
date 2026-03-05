@@ -1,5 +1,16 @@
 from __future__ import annotations
 
+# ── Path bootstrap (must be first) ───────────────────────────────────────────
+# Ensures 'app' is importable regardless of Railway's working directory.
+# When Railway uses app/ as Root Directory, files land at /app/main.py and
+# we need / in sys.path so 'import app' resolves to /app.
+import pathlib, sys as _sys  # noqa: E401
+_repo_root = pathlib.Path(__file__).resolve().parent.parent
+if str(_repo_root) not in _sys.path:
+    _sys.path.insert(0, str(_repo_root))
+# ─────────────────────────────────────────────────────────────────────────────
+
+
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
