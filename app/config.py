@@ -73,7 +73,10 @@ class Settings(BaseSettings):
     def _split_str(cls, v: str | list) -> list[str]:
         """Accept comma-separated strings from Railway env vars."""
         if isinstance(v, str):
-            return [item.strip() for item in v.split(",")]
+            # If it looks like a JSON list string, leave it for pydantic-settings
+            if v.strip().startswith("[") and v.strip().endswith("]"):
+                return v # type: ignore
+            return [item.strip() for item in v.split(",") if item.strip()]
         return v
 
     @field_validator("DATABASE_URL", mode="before")
