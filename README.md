@@ -85,12 +85,3 @@ cp infra/.env.template .env
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-## Docs
-
-See the [`docs/`](docs/) folder for:
-- `PRD.md` — Product Requirements Document
-- `TECH_STACK.md` — Full tech stack decisions and code patterns
-- `BACKEND_STRUCTURE.md` — FastAPI architecture, endpoint catalog, service/repo layers
-- `AI_ARCHITECTURE.md` — RAG pipeline, model registry, prompt registry, guardrails
-- `APP_FLOW.md` — Every screen, state, and user flow
-- `IMPLEMENTATION_PLAN.md` — 14-phase build plan to Q3 2026 launch
