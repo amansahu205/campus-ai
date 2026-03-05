@@ -3,12 +3,16 @@ from __future__ import annotations
 import time
 import uuid
 
-import structlog
+try:
+    import structlog
+    logger = structlog.get_logger()
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)  # type: ignore[assignment]
+
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-
-logger = structlog.get_logger()
 
 
 class RequestIDMiddleware(BaseHTTPMiddleware):

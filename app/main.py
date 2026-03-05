@@ -8,7 +8,13 @@ try:
     _SENTRY_AVAILABLE = True
 except ImportError:
     _SENTRY_AVAILABLE = False
-import structlog
+
+try:
+    import structlog
+    _logger = structlog.get_logger()
+except ImportError:
+    import logging as _logging
+    _logger = _logging.getLogger(__name__)  # type: ignore[assignment]
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -21,7 +27,7 @@ from app.database import close_db, create_db_and_tables
 from app.middleware import RequestIDMiddleware, StructlogMiddleware
 from app.schemas.base import ErrorBody, ErrorResponse
 
-logger = structlog.get_logger()
+logger = _logger
 
 
 # ── Sentry (initialise before app creation) ───────────────────────────────────
