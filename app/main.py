@@ -85,10 +85,6 @@ def create_app() -> FastAPI:
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type", "X-Request-ID"],
     )
-    app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=settings.ALLOWED_HOSTS,
-    )
     app.add_middleware(StructlogMiddleware)
     app.add_middleware(RequestIDMiddleware)
 
