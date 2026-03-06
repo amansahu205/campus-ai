@@ -1,0 +1,17 @@
+university_id: michigan
+domain: athletics
+
+sources:
+  - name: mgoblue
+    url: https://mgoblue.com/calendar?vtype=list
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: schedule_and_results
+    platform: sidearm                   # same Sidearm platform as UMD — reuse SidearmScraper
+    schedule: "*/30 * * * *"
+    pagination: none
+    robots_txt: https://mgoblue.com/robots.txt
+
+content_hash_fields:
+  - sport
+  - opponent_name
+  - game_datetime

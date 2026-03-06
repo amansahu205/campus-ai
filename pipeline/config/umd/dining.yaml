@@ -1,0 +1,37 @@
+university_id: umd
+domain: dining
+
+sources:
+  - name: hall_metadata
+    url: https://dining.umd.edu/hours-locations/dining-halls
+    fetcher_tier: StealthyFetcher        # 403 confirmed — test individual hall URLs as fallback
+    scrape_target: halls
+    schedule: weekly
+    ttl_days: 30
+    graceful_degradation: true
+    fallback_note: "If 403 persists, scrape individual hall pages e.g. /hours-locations/south-campus-dining-hall"
+
+  - name: menus
+    url: https://nutrition.umd.edu/
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: menus
+    query_params: "locationNum={hall_id}&mealName={meal_period}"
+    schedule: "0 6,10,15 * * *"         # 6am, 10am, 3pm
+    ttl_hours: 24
+    robots_txt: null                     # no robots.txt found
+
+  - name: real_time_status
+    url: https://www.instagram.com/umddining/
+    fetcher_tier: StealthyFetcher        # script said Fetcher but Instagram requires auth — override
+    scrape_target: status_overrides
+    schedule: "*/15 * * * *"            # every 15 min
+    ttl_hours: 2
+    rate_limit_seconds: 900
+    graceful_degradation: true
+    robots_txt: https://www.instagram.com/robots.txt
+
+content_hash_fields:
+  - name
+  - schedule
+  - meal_period
+  - stations

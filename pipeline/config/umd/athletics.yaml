@@ -1,0 +1,17 @@
+university_id: umd
+domain: athletics
+
+sources:
+  - name: umterps
+    url: https://umterps.com/calendar
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: schedule_and_results
+    platform: sidearm                   # Sidearm Sports platform
+    schedule: "*/30 * * * *"            # every 30 min
+    pagination: none
+    robots_txt: https://umterps.com/robots.txt
+
+content_hash_fields:
+  - sport
+  - opponent_name
+  - game_datetime

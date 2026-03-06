@@ -1,0 +1,48 @@
+university_id: michigan
+domain: dining
+
+sources:
+  - name: hall_menus
+    url: https://dining.umich.edu/menus-locations/dining-halls/{hall_slug}/
+    fetcher_tier: StealthyFetcher        # 403 confirmed ✅ — active anti-bot
+    scrape_target: menus_and_hours
+    schedule: "0 6,10,15 * * *"
+    ttl_hours: 24
+    rate_limit_seconds: 3
+    graceful_degradation: true
+    fallback_note: "If 403 persists, show 'menu unavailable' in widget with link to dining.umich.edu"
+    robots_txt: https://dining.umich.edu/robots.txt
+
+  - name: real_time_status
+    url: https://www.instagram.com/michigandining/
+    fetcher_tier: StealthyFetcher        # script said Fetcher but Instagram requires auth — override
+    scrape_target: status_overrides
+    schedule: "*/15 * * * *"
+    ttl_hours: 2
+    rate_limit_seconds: 900
+    graceful_degradation: true
+    robots_txt: https://www.instagram.com/robots.txt
+
+halls:
+  - id: bursley
+    slug: bursley
+  - id: east_quad
+    slug: east-quad
+  - id: markley
+    slug: markley
+  - id: mosher_jordan
+    slug: mosher-jordan
+  - id: north_quad
+    slug: north-quad
+  - id: south_quad
+    slug: south-quad
+  - id: twigs_at_oxford
+    slug: twigs-at-oxford
+  - id: wolverine_village
+    slug: wolverine-village
+
+content_hash_fields:
+  - name
+  - schedule
+  - meal_period
+  - stations

@@ -1,0 +1,24 @@
+university_id: umd
+domain: news
+
+sources:
+  - name: maryland_today
+    url: https://today.umd.edu/
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: articles
+    schedule: "0 */4 * * *"             # every 4 hours
+    pagination: see_more_button         # see more button confirmed
+    robots_txt: https://today.umd.edu/robots.txt
+
+  - name: umd_right_now
+    url: https://umdrightnow.umd.edu/news-releases
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: press_releases
+    schedule: "0 */4 * * *"
+    pagination: next_page_button        # next page button confirmed
+    robots_txt: https://umdrightnow.umd.edu/robots.txt
+
+content_hash_fields:
+  - title
+  - published_at
+  - source_url

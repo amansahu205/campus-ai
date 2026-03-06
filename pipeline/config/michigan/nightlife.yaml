@@ -1,0 +1,61 @@
+university_id: michigan
+domain: nightlife
+
+sources:
+  - name: google_places
+    fetcher_tier: api
+    api: google_places
+    search_query: "bars nightlife near University of Michigan Ann Arbor"
+    scrape_target: venue_metadata        # hours, phone, address, coordinates, type
+    schedule: weekly
+    env_key: GOOGLE_PLACES_API_KEY
+
+  - name: ann_arbor_org
+    url: https://www.annarbor.org/things-to-do/nightlife/
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: venue_listings
+    schedule: weekly
+
+  - name: instagram
+    fetcher_tier: StealthyFetcher
+    scrape_target: events_and_specials
+    schedule: "0 10 * * *"
+    rate_limit_seconds: 900
+    graceful_degradation: true
+    robots_txt: https://www.instagram.com/robots.txt
+
+venues:
+  - id: ricks_american_cafe
+    name: Rick's American Cafe
+    google_place_id: null               # fill after running Places API search
+    instagram: ricksamericancafe
+  - id: scorekeepers
+    name: Scorekeepers
+    google_place_id: null
+    instagram: skeepsannarbor
+  - id: necto_nightclub
+    name: Necto Nightclub
+    google_place_id: null
+    instagram: necto_nightclub
+    website: https://necto.net
+  - id: the_heidelberg
+    name: The Heidelberg
+    google_place_id: null
+    instagram: null
+  - id: conor_oneills
+    name: Conor O'Neill's
+    google_place_id: null
+    instagram: null
+  - id: ashleys
+    name: Ashley's
+    google_place_id: null
+    instagram: null
+  - id: the_brown_jug
+    name: The Brown Jug
+    google_place_id: null
+    instagram: null
+
+content_hash_fields:
+  - name
+  - event_date
+  - venue_id

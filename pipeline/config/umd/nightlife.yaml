@@ -1,0 +1,50 @@
+university_id: umd
+domain: nightlife
+
+sources:
+  - name: google_places
+    fetcher_tier: api
+    api: google_places
+    search_query: "bars nightlife near University of Maryland College Park"
+    scrape_target: venue_metadata        # hours, phone, address, coordinates, type
+    schedule: weekly
+    env_key: GOOGLE_PLACES_API_KEY
+
+  - name: instagram
+    fetcher_tier: StealthyFetcher
+    scrape_target: events_and_specials
+    schedule: "0 10 * * *"              # daily 10am
+    rate_limit_seconds: 900
+    graceful_degradation: true
+    robots_txt: https://www.instagram.com/robots.txt
+
+venues:
+  - id: rj_bentleys
+    name: RJ Bentley's
+    google_place_id: null               # fill after running Places API search
+    instagram: rjbentleys
+  - id: cornerstone
+    name: Cornerstone Grill & Loft
+    google_place_id: null
+    instagram: cornerstonegrillandloft
+  - id: looneys_pub
+    name: Looney's Pub
+    google_place_id: null
+    instagram: looneyspub
+  - id: primetime
+    name: PrimeTime
+    google_place_id: null
+    instagram: null
+  - id: marathon_deli
+    name: Marathon Deli
+    google_place_id: null
+    instagram: null
+  - id: dog_haus_biergarten
+    name: Dog Haus Biergarten
+    google_place_id: null
+    instagram: doghausbiergarten
+
+content_hash_fields:
+  - name
+  - event_date
+  - venue_id

@@ -1,0 +1,28 @@
+university_id: michigan
+domain: events
+
+sources:
+  - name: happening_at_michigan
+    url: https://events.umich.edu/list/json?v=2
+    fetcher_tier: json_api               # official JSON API confirmed ✅
+    scrape_target: anchor
+    schedule: "0 */2 * * *"
+    filter_students: "?filter=audience:students"
+    pagination_param: "?max-results=100&page={page}"
+    robots_txt: null                     # no robots.txt found
+
+  - name: maize_pages
+    url: https://events.umich.edu/group/2390/json?v=2
+    fetcher_tier: json_api               # official JSON API confirmed ✅
+    scrape_target: enrichment
+    schedule: "0 */2 * * *"
+    robots_txt: null
+
+# NOTE: All Michigan department events are covered by events.umich.edu API
+# No need to scrape individual department pages (LSA, Engineering, etc.)
+
+content_hash_fields:
+  - name
+  - start_datetime
+  - location_id
+  - description

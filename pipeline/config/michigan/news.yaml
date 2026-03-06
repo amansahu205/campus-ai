@@ -1,0 +1,36 @@
+university_id: michigan
+domain: news
+
+sources:
+  - name: michigan_news_rss
+    url: https://news.umich.edu/feed/
+    fetcher_tier: rss                    # RSS feed confirmed ✅
+    scrape_target: articles
+    schedule: "0 */4 * * *"
+    pagination: none
+    robots_txt: https://news.umich.edu/robots.txt
+    note: "news.umich.edu homepage returns 403 — use RSS feed only"
+
+  - name: university_record_rss
+    url: https://record.umich.edu/feed/
+    fetcher_tier: rss                    # RSS feed confirmed ✅
+    scrape_target: staff_news
+    schedule: "0 */4 * * *"
+    pagination: none
+    robots_txt: https://record.umich.edu/robots.txt
+    note: "record.umich.edu homepage returns 403 — use RSS feed only"
+
+  - name: michigan_today
+    url: https://michigantoday.umich.edu/
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: feature_articles
+    schedule: "0 */4 * * *"
+    pagination: none
+
+# NOTE: lsa.umich.edu/lsa/news-events.html — Fetcher tier
+# Deferred to v1.1 — department-level news, lower student value
+
+content_hash_fields:
+  - title
+  - published_at
+  - source_url

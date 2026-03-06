@@ -1,0 +1,53 @@
+university_id: umd
+domain: events
+
+sources:
+  - name: main_calendar
+    url: https://calendar.umd.edu/cal/main/showEventList.rdo
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: anchor
+    schedule: "0 */2 * * *"             # every 2 hours
+    pagination: load_more_button        # load more button confirmed
+    robots_txt: https://calendar.umd.edu/robots.txt
+
+  - name: terplink
+    url: https://terplink.umd.edu/events
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: enrichment
+    schedule: "0 */2 * * *"
+    pagination: load_more_button        # load more button confirmed
+    robots_txt: https://calendar.umd.edu/robots.txt
+
+  - name: clarice
+    url: https://theclarice.umd.edu/events
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: supplemental
+    schedule: "0 */4 * * *"
+    pagination: none
+    robots_txt: https://theclarice.umd.edu/robots.txt
+
+  - name: music
+    url: https://music.umd.edu/calendar
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: supplemental
+    schedule: "0 */4 * * *"
+    pagination: none
+    robots_txt: https://music.umd.edu/robots.txt
+
+  - name: library
+    url: https://umd.libcal.com/calendar/events
+    fetcher_tier: Fetcher                # static HTML confirmed ✅
+    scrape_target: supplemental
+    schedule: "0 */4 * * *"
+    pagination: next_page_button        # next page button confirmed
+    robots_txt: https://umd.libcal.com/robots.txt
+
+# DEFERRED to v1.1 (blocked 403 or low student value):
+# rhsmith.umd.edu, sph.umd.edu, arch.umd.edu, education.umd.edu, spp.umd.edu
+# Low value (defer v1.1): cs.umd.edu, eng.umd.edu, arhu.umd.edu, agnr.umd.edu, bsos.umd.edu
+
+content_hash_fields:
+  - name
+  - start_datetime
+  - location_id
+  - description
